@@ -14,10 +14,10 @@ permissions:
 
 jobs:
   release-please:
-    runs-on: ubuntu-latest
     outputs:
       pr: ${{ steps.release.outputs.pr }}
       release: ${{ steps.release.outputs.release }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Setup git user
@@ -27,13 +27,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Update npm to latest
-        run: npm i --prefer-online --no-fund --no-audit -g npm@latest
-      - run: npm -v
-      - run: npm i --ignore-scripts --no-audit --no-fund
+      - run: node . run resetdeps
       - name: Release Please
         id: release
-        run: npx --offline template-oss-release-please
+        run: npx --offline template-oss-release-please ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -58,15 +55,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Update npm to latest
-        run: npm i --prefer-online --no-fund --no-audit -g npm@latest
-      - run: npm -v
-      - run: npm i --ignore-scripts --no-audit --no-fund
+      - run: node . run resetdeps
       - name: Post pull request actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run rp-pull-request --ignore-scripts --if-present -ws -iwr
+          node . run rp-pull-request --ignore-scripts --if-present -ws -iwr
           git commit -am "chore: post pull request" || true
           git push
 
@@ -90,12 +84,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Update npm to latest
-        run: npm i --prefer-online --no-fund --no-audit -g npm@latest
-      - run: npm -v
-      - run: npm i --ignore-scripts --no-audit --no-fund
+      - run: node . run resetdeps
       - name: Post release actions
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm run rp-release --ignore-scripts --if-present -ws -iwr
+          node . run rp-release --ignore-scripts --if-present -ws -iwr

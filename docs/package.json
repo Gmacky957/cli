@@ -7,10 +7,10 @@
     "lint": "eslint \"**/*.js\"",
     "postlint": "template-oss-check",
     "template-oss-apply": "template-oss-apply --force",
-    "lintfix": "npm run lint -- --fix",
+    "lintfix": "node .. run lint -- --fix",
     "snap": "tap",
     "test": "tap",
-    "posttest": "npm run lint"
+    "posttest": "node .. run lint"
   },
   "repository": {
     "type": "git",
@@ -32,33 +32,39 @@
   },
   "author": "GitHub Inc.",
   "license": "ISC",
+  "tap": {
+    "statements": 81,
+    "branches": 72,
+    "functions": 75,
+    "lines": 81,
+    "timeout": 600,
+    "nyc-arg": [
+      "--exclude",
+      "tap-snapshots/**"
+    ]
+  },
   "files": [
     "bin/",
     "lib/",
     "content/",
     "nav.yml"
   ],
-  "engines": {
-    "node": ">=16.0.0"
-  },
-  "tap": {
-    "statements": 81,
-    "branches": 72,
-    "functions": 75,
-    "lines": 81,
-    "timeout": 600
-  },
   "templateOSS": {
     "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
+    "version": "4.1.1",
+    "windowsCI": false,
+    "macCI": false,
+    "ciVersions": "latest",
     "distPaths": [
-      "bin/",
-      "lib/",
       "content/",
       "nav.yml"
     ],
-    "ciVersions": [
-      "16"
-    ],
-    "version": "4.0.0"
+    "allowPaths": [
+      "/content/",
+      "/nav.yml"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

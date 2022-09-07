@@ -1,6 +1,6 @@
 # This file is automatically added by @npmcli/template-oss. Do not edit.
 
-name: CI - libnpmsearch
+name: CI - smoke-tests
 
 on:
   workflow_dispatch:
@@ -8,13 +8,13 @@ on:
     branches:
       - '*'
     paths:
-      - workspaces/libnpmsearch/**
+      - smoke-tests/**
   push:
     branches:
       - main
       - latest
     paths:
-      - workspaces/libnpmsearch/**
+      - smoke-tests/**
   schedule:
     # "At 09:00 UTC (02:00 PT) on Monday" https://crontab.guru/#0_9_*_*_1
     - cron: "0 9 * * 1"
@@ -31,8 +31,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - run: node . run resetdeps
-      - run: node . run lint -w libnpmsearch
+          cache: npm
+      - run: node .. i --ignore-scripts --no-audit --no-fund
+      - run: node .. run lint -w smoke-tests
 
   test:
     strategy:
@@ -65,7 +66,8 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: node . run resetdeps
+          cache: npm
+      - run: node .. i --ignore-scripts --no-audit --no-fund
       - name: add tap problem matcher
         run: echo "::add-matcher::.github/matchers/tap.json"
-      - run: node . test --ignore-scripts -w libnpmsearch
+      - run: node .. test --ignore-scripts -w smoke-tests

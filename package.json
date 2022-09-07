@@ -8,11 +8,11 @@
     "workspaces/*"
   ],
   "files": [
+    "bin/",
+    "lib/",
     "index.js",
-    "bin",
     "docs/content/**/*.md",
     "docs/output/**/*.html",
-    "lib",
     "man"
   ],
   "keywords": [
@@ -26,10 +26,10 @@
     "publishtest": false
   },
   "homepage": "https://docs.npmjs.com/",
-  "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me)",
+  "author": "GitHub Inc.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/npm/cli"
+    "url": "https://github.com/npm/cli.git"
   },
   "bugs": {
     "url": "https://github.com/npm/cli/issues"
@@ -220,19 +220,21 @@
     "authors": "bash scripts/update-authors.sh",
     "licenses": "licensee --production --errors-only",
     "test": "tap",
-    "test-all": "npm run test --if-present --workspaces --include-workspace-root",
+    "test-all": "node . run test -ws -iwr --if-present",
     "snap": "tap",
     "postsnap": "make -s docs",
     "test:nocleanup": "NO_TEST_CLEANUP=1 npm run test --",
     "sudotest": "sudo npm run test --",
     "sudotest:nocleanup": "sudo NO_TEST_CLEANUP=1 npm run test --",
-    "posttest": "npm run lint",
+    "posttest": "node . run lint",
     "lint": "eslint \"**/*.js\"",
-    "lintfix": "npm run lint -- --fix",
-    "lint-all": "npm run lint --if-present --workspaces --include-workspace-root",
+    "lintfix": "node . run lint -- --fix",
+    "lint-all": "node . run lint -ws -iwr --if-present",
     "prelint": "rimraf test/npm_cache*",
     "resetdeps": "bash scripts/resetdeps.sh",
-    "rp-pull-request": "npm run resetdeps && npm run authors"
+    "rp-pull-request": "npm run resetdeps && npm run authors",
+    "postlint": "template-oss-check",
+    "template-oss-apply": "template-oss-apply --force"
   },
   "tap": {
     "test-env": [
@@ -243,19 +245,23 @@
     "timeout": 600,
     "nyc-arg": [
       "--exclude",
+      "docs/**",
+      "--exclude",
+      "smoke-tests/**",
+      "--exclude",
       "workspaces/**",
       "--exclude",
       "tap-snapshots/**"
-    ]
-  },
-  "templateOSS": {
-    "rootRepo": false,
-    "rootModule": false,
-    "version": "4.0.0",
-    "releaseTest": "release.yml"
+    ],
+    "test-ignore": "^(docs|smoke-tests|workspaces)/"
   },
   "license": "Artistic-2.0",
   "engines": {
     "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
+  },
+  "templateOSS": {
+    "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
+    "version": "4.1.1",
+    "content": "scripts/template-oss"
   }
 }

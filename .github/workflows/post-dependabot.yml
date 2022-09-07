@@ -1,0 +1,41 @@
+# This file is automatically added by @npmcli/template-oss. Do not edit.
+
+name: Post Dependabot Actions
+
+on: pull_request
+
+# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+permissions:
+  contents: write
+
+jobs:
+  template-oss-apply:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head_ref }}
+      - name: Setup git user
+        run: |
+          git config --global user.email "npm-cli+bot@github.com"
+          git config --global user.name "npm CLI robot"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: npm
+      - run: node . run resetdeps
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v1.1.1
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Apply @npmcli/template-oss changes and lint
+        if: contains(steps.metadata.outputs.dependency-names, '@npmcli/template-oss')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node . run template-oss-apply
+          git commit -am "chore: postinstall for dependabot template-oss PR"
+          git push
+          node . run lint

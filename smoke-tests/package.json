@@ -7,10 +7,10 @@
     "lint": "eslint \"**/*.js\"",
     "postlint": "template-oss-check",
     "template-oss-apply": "template-oss-apply --force",
-    "lintfix": "npm run lint -- --fix",
+    "lintfix": "node .. run lint -- --fix",
     "snap": "tap",
     "test": "tap",
-    "posttest": "npm run lint"
+    "posttest": "node .. run lint"
   },
   "repository": {
     "type": "git",
@@ -30,19 +30,23 @@
   "license": "ISC",
   "templateOSS": {
     "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
-    "version": "4.0.0",
+    "version": "4.1.1",
     "workspaceRepo": false
   },
   "tap": {
     "no-coverage": true,
     "timeout": 300,
-    "files": "test/index.js"
+    "files": "test/index.js",
+    "nyc-arg": [
+      "--exclude",
+      "tap-snapshots/**"
+    ]
+  },
+  "engines": {
+    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
   },
   "files": [
     "bin/",
     "lib/"
-  ],
-  "engines": {
-    "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-  }
+  ]
 }
